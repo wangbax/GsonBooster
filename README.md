@@ -1,33 +1,22 @@
 # GsonBooster
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.spirytusz/booster-annotation/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.spirytusz/booster-annotation)
 
 GsonBooster是一个注解处理器，能够在编译期自动生成**兼容Kotlin特性的**、**高性能TypeAdapter**，以提升Gson的序列化与反序列化时间性能。
 
+> 本仓库 fork 自 [spirytusz/GsonBooster](https://github.com/spirytusz/GsonBooster)，升级支持 **Kotlin 2.0** + **KSP 2.x**。
+
+## Requirements
+
+| 依赖 | 版本 |
+|------|------|
+| Kotlin | 2.0.21+ |
+| Gradle | 8.9+ |
+| AGP | 8.5.0+ |
+| KSP | 2.0.21-1.0.28+ |
+| compileSdk | 34+ |
+
 ## Download
-<details open>
-  <summary>Gradle</summary>
 
-```groovy
-plugins {
-    id 'kotlin-kapt'
-}
-
-dependencies {
-    implementation("com.spirytusz:booster-annotation:$last_versoin")
-    kapt("com.spirytusz:booster-processor:$last_version")
-}
-
-kapt {
-    arguments {
-        // 指定生成TypeAdapterFactory的全限定名，不指定则不生成
-        arg("factory", "com.spirytusz.booster.BoosterTypeAdapterFactory")
-    }
-}
-```
-</details>
-
-<details close>
-  <summary>Kotlin-DSL</summary>
+### KAPT
 
 ```kotlin
 plugins {
@@ -35,8 +24,8 @@ plugins {
 }
 
 dependencies {
-    implementation("com.spirytusz:booster-annotation:$last_versoin")
-    kapt("com.spirytusz:booster-processor:$last_version")
+    implementation("io.github.wangbax:booster-annotation:2.0.1")
+    kapt("io.github.wangbax:booster-processor:2.0.1")
 }
 
 kapt {
@@ -46,7 +35,36 @@ kapt {
     }
 }
 ```
-</details>
+
+### KSP (推荐)
+
+根目录 build.gradle.kts：
+
+```kotlin
+plugins {
+    id("com.google.devtools.ksp") version "2.0.21-1.0.28" apply false
+}
+```
+
+app 模块 build.gradle.kts：
+
+```kotlin
+plugins {
+    id("com.google.devtools.ksp")
+}
+
+dependencies {
+    implementation("io.github.wangbax:booster-annotation:2.0.1")
+    ksp("io.github.wangbax:booster-processor-ksp:2.0.1")
+}
+
+ksp {
+    // 指定生成TypeAdapterFactory的全限定名，不指定则不生成
+    arg("factory", "com.spirytusz.booster.ksp.BoosterTypeAdapterFactory")
+}
+```
+
+> KSP 2.x 不再需要手动添加 `sourceSets`，生成的代码会被自动识别。
 
 ## Usage
 
@@ -64,6 +82,7 @@ val gson = GsonBuilder()
 ```
 
 ## Why
+
 ### Benchmark
 
 * OS: Android 10
@@ -78,102 +97,15 @@ val gson = GsonBuilder()
 
 ![](img/compare.png)
 
-## KSP-Support
-[KSP(Kotlin Symbol Processing)](https://github.com/google/ksp)是Google推出的更高性能、源码级的注解处理器，GsonBooster也对KSP作了支持。
+## Changelog
 
-<details open>
-  <summary>Gradle</summary>
-
-根目录build.gradle
-
-```groovy
-plugins {
-    id('com.google.devtools.ksp') version "$kotlin_version-1.0.0"
-}
-```
-
-app模块build.gradle
-
-```groovy
-plugins {
-    id('com.google.devtools.ksp')
-}
-
-android {
-    // KSP生成的代码不能被IDE自动识别到，需要手动添加到sourceSets中
-    buildTypes {
-        debug {
-            sourceSets.main {
-                java.srcDir("build/generated/ksp/debug/kotlin")
-            }
-        }
-        release {
-            sourceSets.main {
-                java.srcDir("build/generated/ksp/release/kotlin")
-            }
-        }
-    }
-}
-
-dependencies {
-    implementation('com.spirytusz:booster-annotation:$last_versoin')
-    ksp('com.spirytusz:booster-processor-ksp:$last_version')
-}
-
-ksp {
-    // 指定生成TypeAdapterFactory的全限定名，不指定则不生成
-    arg('factory', 'com.spirytusz.booster.ksp.BoosterTypeAdapterFactory')
-}
-```
-
-</details>
-
-<details close>
-  <summary>Kotlin DSL</summary>
-
-根目录下的build.gradle
-
-```kotlin
-plugins {
-    kotlin("jvm")
-    id("com.google.devtools.ksp") version "$kotlin_version-1.0.0"
-}
-```
-
-app模块build.gradle
-
-```kotlin
-plugins {
-    id("com.google.devtools.ksp")
-}
-
-android {
-    // KSP生成的代码不能被IDE自动识别到，需要手动添加到sourceSets中
-    buildTypes {
-        getByName("debug") {
-            sourceSets.getByName("main") {
-                java.srcDir("build/generated/ksp/debug/kotlin")
-            }
-        }
-        getByName("release") {
-            sourceSets.getByName("main") {
-                java.srcDir("build/generated/ksp/release/kotlin")
-            }
-        }
-    }
-}
-
-dependencies {
-    implementation("com.spirytusz:booster-annotation:$last_versoin")
-    ksp("com.spirytusz:booster-processor-ksp:$last_version")
-}
-
-ksp {
-    // 指定生成TypeAdapterFactory的全限定名，不指定则不生成
-    arg("factory", "com.spirytusz.booster.ksp.BoosterTypeAdapterFactory")
-}
-```
-</details>
+### 2.0.1
+- 升级 Kotlin 2.0.21、Gradle 8.9、AGP 8.5.0、KSP 2.0.21-1.0.28
+- `kotlinx-metadata-jvm` 迁移至 `kotlin-metadata-jvm` 2.0 API
+- 修复 kapt 处理器遇到 Java 超类（无 `@Metadata`）崩溃的问题
+- 修复 KSP 扫描器未过滤 `kotlin.Any` 超类型的问题
+- 修复星号投影（`List<*>`）导致的 NPE
+- group 变更为 `io.github.wangbax`
 
 ## License
 ```
