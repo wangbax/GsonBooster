@@ -7,8 +7,8 @@ import com.spirytusz.booster.processor.base.data.KtField
 import com.spirytusz.booster.processor.base.data.type.KtType
 import com.spirytusz.booster.processor.base.log.MessageLogger
 import com.spirytusz.booster.processor.scan.kapt.data.KaptKtField
-import kotlinx.metadata.Flag
-import kotlinx.metadata.KmValueParameter
+import kotlin.metadata.KmValueParameter
+import kotlin.metadata.declaresDefaultValue
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
@@ -34,7 +34,7 @@ class KmValueParameterResolver(
         } else {
             listOf(fieldName)
         }
-        val initializer = if (Flag.ValueParameter.DECLARES_DEFAULT_VALUE(kmValueParameter.flags)) {
+        val initializer = if (kmValueParameter.declaresDefaultValue) {
             FieldInitializer.HAS_DEFAULT
         } else {
             FieldInitializer.NONE

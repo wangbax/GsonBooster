@@ -6,8 +6,9 @@ import com.spirytusz.booster.processor.base.data.FieldInitializer
 import com.spirytusz.booster.processor.base.data.KtField
 import com.spirytusz.booster.processor.base.data.type.KtType
 import com.spirytusz.booster.processor.scan.kapt.data.KaptKtField
-import kotlinx.metadata.Flag
-import kotlinx.metadata.KmProperty
+import kotlin.metadata.KmProperty
+import kotlin.metadata.isDelegated
+import kotlin.metadata.isVar
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
@@ -22,7 +23,7 @@ class KmPropertyResolver(
 
     fun resolveKmProperty(): KtField {
         val fieldName = kmProperty.name
-        val isFinal = !Flag.Property.IS_VAR(kmProperty.flags)
+        val isFinal = !kmProperty.isVar
         val serializedNameAnnotation = aptVariableElement?.getAnnotation(SerializedName::class.java)
         val keys = if (serializedNameAnnotation != null) {
             val result = mutableListOf<String>()
@@ -32,7 +33,7 @@ class KmPropertyResolver(
         } else {
             listOf(fieldName)
         }
-        val initializer = if (Flag.Property.IS_DELEGATED(kmProperty.flags)) {
+        val initializer = if (kmProperty.isDelegated) {
             FieldInitializer.DELEGATED
         } else {
             FieldInitializer.HAS_DEFAULT

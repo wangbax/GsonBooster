@@ -1,5 +1,6 @@
 package com.spirytusz.booster.processor.kapt.test.base
 
+import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation
 import java.util.regex.Pattern
 
@@ -9,7 +10,7 @@ abstract class AbstractKaptCompilePhaseCheckerPatternTest : AbstractKaptCompileP
 
     open val exitCode = KotlinCompilation.ExitCode.INTERNAL_ERROR
 
-    override fun checkResult(result: KotlinCompilation.Result) {
+    override fun checkResult(result: JvmCompilationResult) {
         assert(result.exitCode == exitCode)
 
         assert(pattern.matcher(result.messages).find())

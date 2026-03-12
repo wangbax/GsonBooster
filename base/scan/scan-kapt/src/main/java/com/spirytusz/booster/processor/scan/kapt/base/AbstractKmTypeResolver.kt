@@ -3,8 +3,8 @@ package com.spirytusz.booster.processor.scan.kapt.base
 import com.spirytusz.booster.processor.base.data.type.KtType
 import com.spirytusz.booster.processor.base.extensions.javaType
 import com.squareup.kotlinpoet.*
-import kotlinx.metadata.KmClassifier
-import kotlinx.metadata.KmType
+import kotlin.metadata.KmClassifier
+import kotlin.metadata.KmType
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind

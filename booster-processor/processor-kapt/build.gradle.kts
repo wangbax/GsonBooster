@@ -4,6 +4,12 @@ plugins {
     id("maven-publish-plugin")
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi")
+    }
+}
+
 dependencies {
     implementation(Dependencies.kotlin_stdlib)
 

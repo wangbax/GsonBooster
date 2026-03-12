@@ -11,7 +11,8 @@ import com.spirytusz.booster.processor.base.log.MessageLogger
 import com.spirytusz.booster.processor.base.scan.ClassScanner
 import com.spirytusz.booster.processor.scan.kapt.data.IElementOwner
 import com.spirytusz.booster.processor.scan.kapt.data.KaptKtType
-import kotlinx.metadata.*
+import kotlin.metadata.*
+import kotlin.metadata.isSecondary
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.*
 
@@ -66,7 +67,7 @@ class KaptClassScanner(
         }
 
         val primaryConstructor = kmClass.constructors.single {
-            !Flag.Constructor.IS_SECONDARY(it.flags)
+            !it.isSecondary
         }
         return primaryConstructor.valueParameters.asSequence().filter {
             val aptVariableElement = findAptVariableElement(it.name)
@@ -109,7 +110,7 @@ class KaptClassScanner(
             classifier.name.replace("/", ".")
         }.filter {
             it != Any::class.qualifiedName
-        }.map { name ->
+        }.mapNotNull { name ->
             val typeElement = processingEnvironment.elementUtils.getTypeElement(name)
             if (typeElement == null) {
                 logger.error(
@@ -122,6 +123,9 @@ class KaptClassScanner(
             } else {
                 typeElement
             }
+        }.filter { superTypeElement ->
+            // Skip Java classes (no @Metadata annotation)
+            superTypeElement.getAnnotation(Metadata::class.java) != null
         }.map { superTypeElement ->
             KaptClassScanner(
                 processingEnvironment,

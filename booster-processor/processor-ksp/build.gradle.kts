@@ -1,9 +1,13 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("jvm")
     kotlin("kapt")
     id("maven-publish-plugin")
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi")
+    }
 }
 
 dependencies {
@@ -23,8 +27,4 @@ dependencies {
 
     testImplementation(Dependencies.kotlin_compiler_testing_ksp)
     testApi(project(":base:processor-base-test"))
-}
-
-tasks.withType(KotlinCompile::class.java).all {
-    kotlinOptions.freeCompilerArgs += "-Xopt-in=com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview"
 }

@@ -2,6 +2,12 @@ plugins {
     kotlin("jvm")
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi")
+    }
+}
+
 dependencies {
     api(Dependencies.junit)
     api(Dependencies.gson)

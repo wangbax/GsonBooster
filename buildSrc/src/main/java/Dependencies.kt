@@ -1,30 +1,30 @@
 object BuildTools {
-    const val compileSdkVersion = 31
-    const val targetSdkVersion = 31
-    const val minSdkVersion = 19
+    const val compileSdkVersion = 34
+    const val targetSdkVersion = 34
+    const val minSdkVersion = 21
 }
 
 object Versions {
-    const val gradle_build_tool = "7.1.3"
+    const val gradle_build_tool = "8.5.0"
 
-    const val kotlin_version = "1.5.31"
-    const val kotlinx_metadata = "0.3.0"
+    const val kotlin_version = "2.0.21"
+    const val kotlin_metadata = kotlin_version
 
-    const val kotlin_poet = "1.10.2"
+    const val kotlin_poet = "1.18.1"
     const val gson = "2.9.0"
-    const val auto_service = "1.0"
-    const val kotlin_compiler_testing = "1.4.7"
-    const val ksp = "$kotlin_version-1.0.0"
+    const val auto_service = "1.1.1"
+    const val kotlin_compiler_testing = "0.6.0"
+    const val ksp = "$kotlin_version-1.0.28"
     const val junit = "4.13.2"
     const val jmh = "1.28"
     const val androidx_constraintlayout = "2.1.1"
     const val androidx_appcompat = "1.3.1"
     const val material_design = "1.4.0"
 
-    const val androidx_benchmark_gradle_plugin = "1.0.0"
-    const val androidx_test_runner = "1.4.0"
-    const val androidx_test_junit_ext = "1.1.3"
-    const val androidx_benchmark_junit = "1.0.0"
+    const val androidx_benchmark_gradle_plugin = "1.2.4"
+    const val androidx_test_runner = "1.5.2"
+    const val androidx_test_junit_ext = "1.1.5"
+    const val androidx_benchmark_junit = "1.2.4"
 
     const val booster = "1.3.0"
 }
@@ -32,12 +32,12 @@ object Versions {
 object Dependencies {
     const val gradle_build_tool = "com.android.tools.build:gradle:${Versions.gradle_build_tool}"
 
-    const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$${Versions.kotlin_version}"
+    const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin_version}"
 
     const val kotlin_reflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin_version}"
 
-    const val kotlinx_metadata =
-        "org.jetbrains.kotlinx:kotlinx-metadata-jvm:${Versions.kotlinx_metadata}"
+    const val kotlin_metadata =
+        "org.jetbrains.kotlin:kotlin-metadata-jvm:${Versions.kotlin_metadata}"
 
     const val kotlin_poet = "com.squareup:kotlinpoet:${Versions.kotlin_poet}"
 
@@ -51,12 +51,12 @@ object Dependencies {
     const val auto_service = "com.google.auto.service:auto-service:${Versions.auto_service}"
 
     const val kotlin_compiler_testing =
-        "com.github.tschuchortdev:kotlin-compile-testing:${Versions.kotlin_compiler_testing}"
+        "dev.zacsweers.kctfork:core:${Versions.kotlin_compiler_testing}"
 
     const val ksp_api = "com.google.devtools.ksp:symbol-processing-api:${Versions.ksp}"
 
     const val kotlin_compiler_testing_ksp =
-        "com.github.tschuchortdev:kotlin-compile-testing-ksp:${Versions.kotlin_compiler_testing}"
+        "dev.zacsweers.kctfork:ksp:${Versions.kotlin_compiler_testing}"
 
     const val junit = "junit:junit:${Versions.junit}"
 
