@@ -7,12 +7,13 @@ import com.spirytusz.booster.processor.kapt.KaptBoosterProcessor
 import com.spirytusz.booster.processor.test.AbstractSerializeTest
 import com.spirytusz.booster.processor.test.extensions.getClassByName
 import com.spirytusz.booster.processor.test.extensions.toJsonObject
+import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 
 abstract class AbstractKaptSerializeTest : AbstractSerializeTest() {
 
-    override fun compile(sources: List<SourceFile>): KotlinCompilation.Result {
+    override fun compile(sources: List<SourceFile>): JvmCompilationResult {
         return KotlinCompilation().apply {
             this.sources = sources
             inheritClassPath = true
@@ -23,7 +24,7 @@ abstract class AbstractKaptSerializeTest : AbstractSerializeTest() {
         }.compile()
     }
 
-    override fun getExpectJsonObject(result: KotlinCompilation.Result): JsonObject {
+    override fun getExpectJsonObject(result: JvmCompilationResult): JsonObject {
         val beanClass = result.getClassByName(beanClassName)
         return Gson().fromJson(json, beanClass).toJsonObject()
     }

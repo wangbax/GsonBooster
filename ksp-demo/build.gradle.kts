@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+    namespace = "com.spirytusz.gsonbooster.ksp"
     compileSdk = BuildTools.compileSdkVersion
 
     defaultConfig {
@@ -18,23 +19,10 @@ android {
     }
 
     buildTypes {
-        getByName("debug") {
-            sourceSets.getByName("main") {
-                java.srcDir("build/generated/ksp/debug/kotlin")
-            }
-        }
         getByName("release") {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-
-            sourceSets.getByName("main") {
-                java.srcDir("build/generated/ksp/release/kotlin")
-            }
         }
-    }
-
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     compileOptions {
@@ -42,6 +30,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
@@ -53,8 +44,8 @@ dependencies {
     testImplementation(Dependencies.junit)
 
     implementation(Dependencies.gson)
-    implementation(Dependencies.booster_annotation)
-    ksp(Dependencies.booster_processor_ksp)
+    implementation(project(":booster-annotation"))
+    ksp(project(":booster-processor:processor-ksp"))
 }
 
 ksp {

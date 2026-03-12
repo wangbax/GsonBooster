@@ -7,6 +7,7 @@ import com.google.gson.TypeAdapterFactory
 import com.spirytusz.booster.processor.test.extensions.fromResource
 import com.spirytusz.booster.processor.test.extensions.getClassByName
 import com.spirytusz.booster.processor.test.extensions.toJsonObject
+import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import org.junit.Test
@@ -23,9 +24,9 @@ abstract class AbstractSerializeTest {
 
     protected val json by lazy { this::class.java.getResource(jsonFilePath).readText() }
 
-    abstract fun compile(sources: List<SourceFile>): KotlinCompilation.Result
+    abstract fun compile(sources: List<SourceFile>): JvmCompilationResult
 
-    abstract fun getExpectJsonObject(result: KotlinCompilation.Result): JsonObject
+    abstract fun getExpectJsonObject(result: JvmCompilationResult): JsonObject
 
     @Test
     fun test() {
@@ -41,7 +42,7 @@ abstract class AbstractSerializeTest {
         testDeserialize(result, beanClass)
     }
 
-    private fun testSerialize(result: KotlinCompilation.Result, beanClass: Class<*>) {
+    private fun testSerialize(result: JvmCompilationResult, beanClass: Class<*>) {
         printLog("start testSerialize >>>")
         val boosterResult = makeBooster(result).fromJson(json, beanClass)
 
@@ -53,7 +54,7 @@ abstract class AbstractSerializeTest {
         printLog("end testSerialize <<<")
     }
 
-    private fun testDeserialize(result: KotlinCompilation.Result, beanClass: Class<*>) {
+    private fun testDeserialize(result: JvmCompilationResult, beanClass: Class<*>) {
         printLog("start testDeserialize >>>")
         val bean = Gson().fromJson(getExpectJsonObject(result).toString(), beanClass)
 
@@ -67,7 +68,7 @@ abstract class AbstractSerializeTest {
         printLog("end testDeserialize <<<")
     }
 
-    private fun makeBooster(result: KotlinCompilation.Result): Gson {
+    private fun makeBooster(result: JvmCompilationResult): Gson {
         val typeAdapterFactory = result.getClassByName(typeAdapterFactoryClassName).newInstance()
                 as TypeAdapterFactory
         return GsonBuilder()

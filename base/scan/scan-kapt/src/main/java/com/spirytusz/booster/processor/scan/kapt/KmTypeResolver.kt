@@ -7,10 +7,10 @@ import com.spirytusz.booster.processor.base.extensions.kotlinType
 import com.spirytusz.booster.processor.scan.kapt.base.AbstractKmTypeResolver
 import com.spirytusz.booster.processor.scan.kapt.data.KaptKtType
 import com.squareup.kotlinpoet.ClassName
-import kotlinx.metadata.Flag
-import kotlinx.metadata.KmClassifier
-import kotlinx.metadata.KmType
-import kotlinx.metadata.KmVariance
+import kotlin.metadata.KmClassifier
+import kotlin.metadata.KmType
+import kotlin.metadata.KmVariance
+import kotlin.metadata.isNullable
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.VariableElement
 
@@ -29,15 +29,16 @@ class KmTypeResolver(
     private fun KmType.parseKmType(): KtType {
         val kmClassifier = classifier as KmClassifier.Class
         val name = kmClassifier.name.replace("/", ".")
-        val nullable = Flag.Type.IS_NULLABLE(flags)
+        val nullable = isNullable
         val jsonTokenName = parseJsonTokenName()
-        val generics = arguments.map {
+        val generics = arguments.mapNotNull {
+            val type = it.type ?: return@mapNotNull null // skip star projections (*)
             val variance = when (it.variance) {
                 KmVariance.IN -> KtVariance.IN
                 KmVariance.OUT -> KtVariance.OUT
                 else -> KtVariance.INVARIANT
             }
-            it.type!!.parseKmType().copy(variance = variance)
+            type.parseKmType().copy(variance = variance)
         }
         return KaptKtType(
             rawType = name,

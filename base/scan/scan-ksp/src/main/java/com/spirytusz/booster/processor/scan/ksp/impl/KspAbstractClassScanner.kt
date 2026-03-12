@@ -125,6 +125,8 @@ abstract class KspAbstractClassScanner(
     private fun scanSuperKtFields(): List<KspKtField> {
         return ksClass.getAllSuperTypes().map {
             it.declaration.findActualDeclaration() as KSClassDeclaration
+        }.filter {
+            it.qualifiedName?.asString() != "kotlin.Any"
         }.map {
             KspClassScannerFactory.create(
                 environment,

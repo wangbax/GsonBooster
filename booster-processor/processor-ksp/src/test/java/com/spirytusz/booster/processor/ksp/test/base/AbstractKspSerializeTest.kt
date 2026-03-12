@@ -8,6 +8,7 @@ import com.spirytusz.booster.processor.ksp.test.extensions.kspGeneratedSources
 import com.spirytusz.booster.processor.test.AbstractSerializeTest
 import com.spirytusz.booster.processor.test.extensions.getClassByName
 import com.spirytusz.booster.processor.test.extensions.toJsonObject
+import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.kspArgs
@@ -15,13 +16,13 @@ import com.tschuchort.compiletesting.symbolProcessorProviders
 
 abstract class AbstractKspSerializeTest : AbstractSerializeTest() {
 
-    override fun compile(sources: List<SourceFile>): KotlinCompilation.Result {
+    override fun compile(sources: List<SourceFile>): JvmCompilationResult {
         printLog("compile beans")
         val compileBeanResult = KotlinCompilation().apply {
             this.sources = sources
             inheritClassPath = true
             messageOutputStream = System.out
-            symbolProcessorProviders = listOf(BoosterProcessorProvider())
+            symbolProcessorProviders = mutableListOf(BoosterProcessorProvider())
             kspArgs =
                 mutableMapOf(KEY_TYPE_ADAPTER_FACTORY_NAME to typeAdapterFactoryClassName)
         }.compile()
@@ -36,7 +37,7 @@ abstract class AbstractKspSerializeTest : AbstractSerializeTest() {
         }.compile()
     }
 
-    override fun getExpectJsonObject(result: KotlinCompilation.Result): JsonObject {
+    override fun getExpectJsonObject(result: JvmCompilationResult): JsonObject {
         val beanClass = result.getClassByName(beanClassName)
         return Gson().fromJson(json, beanClass).toJsonObject()
     }

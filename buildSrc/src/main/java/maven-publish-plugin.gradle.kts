@@ -104,12 +104,8 @@ publishing {
 
     repositories {
         maven {
-            name = "sonatype"
-            setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
-            credentials {
-                username = getPropertyAsString("nexus.username")
-                password = getPropertyAsString("nexus.password")
-            }
+            name = "staging"
+            setUrl(rootProject.file("build/staging-deploy").toURI())
         }
     }
 
@@ -122,5 +118,6 @@ publishing {
 }
 
 signing {
+    isRequired = !project.hasProperty("signing.skip")
     sign(publishing.publications["pluginMaven"])
 }

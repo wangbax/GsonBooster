@@ -2,7 +2,7 @@ package com.spirytusz.booster.processor.test.extensions
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.tschuchort.compiletesting.KotlinCompilation
+import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.SourceFile
 import java.io.File
 
@@ -22,6 +22,6 @@ fun Any.toJsonObject(): JsonObject {
     return gson.fromJson(gson.toJson(this), JsonObject::class.java)
 }
 
-fun KotlinCompilation.Result.getClassByName(name: String): Class<*> {
+fun JvmCompilationResult.getClassByName(name: String): Class<*> {
     return classLoader.loadClass(name)
 }

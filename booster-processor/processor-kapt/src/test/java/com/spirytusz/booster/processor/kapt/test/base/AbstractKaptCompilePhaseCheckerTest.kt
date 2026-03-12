@@ -2,11 +2,12 @@ package com.spirytusz.booster.processor.kapt.test.base
 
 import com.spirytusz.booster.processor.kapt.KaptBoosterProcessor
 import com.spirytusz.booster.processor.test.AbstractCompilePhaseCheckerTest
+import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 
 abstract class AbstractKaptCompilePhaseCheckerTest : AbstractCompilePhaseCheckerTest() {
-    override fun compile(sources: List<SourceFile>): KotlinCompilation.Result {
+    override fun compile(sources: List<SourceFile>): JvmCompilationResult {
         return KotlinCompilation().apply {
             this.sources = sources
             inheritClassPath = true

@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+    namespace = "com.spirytusz.gsonbooster.kapt"
     compileSdk = BuildTools.compileSdkVersion
 
     defaultConfig {
@@ -24,13 +25,13 @@ android {
         }
     }
 
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
 
@@ -43,8 +44,8 @@ dependencies {
     testImplementation(Dependencies.junit)
 
     implementation(Dependencies.gson)
-    implementation(Dependencies.booster_annotation)
-    kapt(Dependencies.booster_processor)
+    implementation(project(":booster-annotation"))
+    kapt(project(":booster-processor:processor-kapt"))
 }
 
 kapt {
