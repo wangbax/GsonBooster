@@ -12,7 +12,6 @@ import com.spirytusz.booster.processor.base.scan.ClassScanner
 import com.spirytusz.booster.processor.scan.kapt.data.IElementOwner
 import com.spirytusz.booster.processor.scan.kapt.data.KaptKtType
 import kotlin.metadata.*
-import kotlin.metadata.isSecondary
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.*
 
@@ -124,8 +123,14 @@ class KaptClassScanner(
                 typeElement
             }
         }.filter { superTypeElement ->
-            // Skip Java classes (no @Metadata annotation)
-            superTypeElement.getAnnotation(Metadata::class.java) != null
+            val hasMetadata = superTypeElement.getAnnotation(Metadata::class.java) != null
+            if (!hasMetadata) {
+                logger.warn(
+                    "Skipping Java super type ${superTypeElement.qualifiedName} (no @Metadata)",
+                    belongingClass
+                )
+            }
+            hasMetadata
         }.map { superTypeElement ->
             KaptClassScanner(
                 processingEnvironment,

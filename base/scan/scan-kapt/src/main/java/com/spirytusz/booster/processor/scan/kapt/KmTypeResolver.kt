@@ -31,13 +31,14 @@ class KmTypeResolver(
         val name = kmClassifier.name.replace("/", ".")
         val nullable = isNullable
         val jsonTokenName = parseJsonTokenName()
-        val generics = arguments.map {
+        val generics = arguments.mapNotNull {
+            val type = it.type ?: return@mapNotNull null // skip star projections (*)
             val variance = when (it.variance) {
                 KmVariance.IN -> KtVariance.IN
                 KmVariance.OUT -> KtVariance.OUT
                 else -> KtVariance.INVARIANT
             }
-            it.type!!.parseKmType().copy(variance = variance)
+            type.parseKmType().copy(variance = variance)
         }
         return KaptKtType(
             rawType = name,

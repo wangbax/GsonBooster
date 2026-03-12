@@ -23,7 +23,12 @@ class KmClassCacheHolder(private val logger: MessageLogger) {
             logger.error("@Metadata annotation not found", this)
             return null
         }
-        val kotlinClassMetadata = KotlinClassMetadata.readLenient(metadataAnnotation)
+        val kotlinClassMetadata = try {
+            KotlinClassMetadata.readLenient(metadataAnnotation)
+        } catch (e: Exception) {
+            logger.error("Failed to read KotlinClassMetadata: ${e.message}", this)
+            return null
+        }
         kotlinClassMetadata as? KotlinClassMetadata.Class ?: run {
             logger.error("parse result is NOT KotlinClassMetadata.Class", this)
             return null
